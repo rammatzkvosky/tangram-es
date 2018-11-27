@@ -181,6 +181,10 @@ struct Context {
         _feature = feature;
     }
 
+    void setFilterKey(Filter::Key _key, int _val) {
+        setGlobalValue(Filter::keyName(_key), newNumber(_val));
+    }
+
     bool setFunction(JSFunctionIndex index, const std::string& fn) {
         JSObjectRef jsFunctionObject = compileFunction(fn);
         if (!jsFunctionObject) {

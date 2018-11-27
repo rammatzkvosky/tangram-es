@@ -116,7 +116,7 @@ std::unique_ptr<Tile> TileBuilder::build(TileID _tileID, const TileData& _tileDa
 
     tile->initGeometry(m_scene->styles().size());
 
-    m_styleContext.setKeywordZoom(_tileID.s);
+    m_styleContext.setFilterKey(Filter::Key::zoom, _tileID.s);
 
     for (auto& builder : m_styleBuilder) {
         if (builder.second)

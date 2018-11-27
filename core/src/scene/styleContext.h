@@ -9,9 +9,9 @@
 namespace Tangram {
 
 struct Feature;
-class Scene;
 
 using JSFunctionIndex = uint32_t;
+using JSScopeMarker = int32_t;
 
 class StyleContext {
 public:
@@ -28,14 +28,14 @@ public:
     void setFeature(const Feature& _feature);
 
     // Set keyword for currently processed Tile
-    void setKeywordZoom(int _zoom);
+    void setFilterKey(Filter::Key _key, int _value);
 
-    // Called from Filter::eval
-    float getKeywordZoom() const;
-    const Value& getKeyword(FilterKeyword _key) const;
+    // Called from Filter::eval and used by JS functions: $zoom
+    float getZoomLevel() const { return m_zoomLevel; }
+    int getFilterKey(Filter::Key _key) const;
 
-    // returns meters per pixels at current style zoom
-    float getPixelAreaScale();
+    // Returns meters per pixels at current style zoom
+    float getPixelAreaScale() const { return m_pixelAreaScale; }
 
     // Called from Filter::eval
     bool evalFilter(JSFunctionIndex idx);
@@ -48,10 +48,6 @@ public:
 
     // Unset Feature handle
     void clear();
-
-    // Set keyword for currently processed Tile
-    void setKeyword(const std::string& _key, Value _value);
-    const Value& getKeyword(const std::string& _key) const;
 
     // Set currently processed Feature
     void setCurrentFeature(const Feature* feature);
@@ -67,22 +63,21 @@ public:
     struct DynamicStyleContext {
         virtual ~DynamicStyleContext() = default;
         virtual void setFeature(const Feature& _feature) = 0;
-        virtual void setKeywordZoom(int _zoom) = 0;
-        virtual float getKeywordZoom() const = 0;
-        virtual const Value& getKeyword(FilterKeyword _key) const = 0;
+        virtual void setFilterKey(Filter::Key _key, int _value) = 0;
         virtual bool evalFilter(JSFunctionIndex id) = 0;
         virtual bool evalStyle(JSFunctionIndex id, StyleParamKey _key, StyleParam::Value& _val) = 0;
         virtual void initFunctions(const Scene& _scene) = 0;
         virtual void clear() = 0;
-        virtual void setKeyword(const std::string& _key, Value _value) = 0;
-        virtual const Value& getKeyword(const std::string& _key) const = 0;
-        virtual float getPixelAreaScale() = 0;
         virtual bool addFunction(const std::string& _function) = 0;
         virtual void setSceneGlobals(const YAML::Node& sceneGlobals) = 0;
         virtual bool setFunctions(const std::vector<std::string>& _functions)  = 0;
     };
 
     std::unique_ptr<DynamicStyleContext> impl;
+
+    std::array<int, 4> m_filterKeys {};
+    float m_zoomLevel = 0;
+    float m_pixelAreaScale = 0;
 };
 
 } // namespace Tangram
