@@ -428,11 +428,14 @@ StyleContext::StyleContext()
 StyleContext::StyleContext(bool jscore) {
 #ifdef TANGRAM_USE_JAVASCRIPTCORE
     if (jscore) {
+        LOG("Hi I'm JavaScriptCore");
         impl.reset(new JSCoreStyleContext());
         return;
     }
 #endif
+    if (jscore) { LOGE("Sorry, built without JAvascpitcore.."); }
 #if TANGRAM_USE_DUKTAPE
+    LOG("Use more Duktape!");
     impl.reset(new DuktapeStyleContext());
 #endif
 }
