@@ -3,6 +3,7 @@ project(tangram-core)
 # Build core library dependencies.
 add_subdirectory(deps)
 
+
 add_library(tangram-core
   src/map.cpp
   src/platform.cpp
@@ -15,14 +16,11 @@ add_library(tangram-core
   src/data/formats/geoJson.cpp
   src/data/formats/mvt.cpp
   src/data/formats/topoJson.cpp
-  src/debug/frameInfo.cpp
-  src/debug/textDisplay.cpp
   src/gl/framebuffer.cpp
   src/gl/glError.cpp
   src/gl/glyphTexture.cpp
   src/gl/hardware.cpp
   src/gl/mesh.cpp
-  src/gl/primitives.cpp
   src/gl/renderState.cpp
   src/gl/shaderProgram.cpp
   src/gl/shaderSource.cpp
@@ -58,8 +56,6 @@ add_library(tangram-core
   src/scene/styleParam.cpp
   src/selection/featureSelection.cpp
   src/selection/selectionQuery.cpp
-  src/style/debugStyle.cpp
-  src/style/debugTextStyle.cpp
   src/style/material.cpp
   src/style/pointStyle.cpp
   src/style/pointStyleBuilder.cpp
@@ -166,6 +162,26 @@ if(TANGRAM_WARN_ON_RULE_CONFLICT)
   target_compile_definitions(tangram-core
     PRIVATE
     TANGRAM_WARN_ON_RULE_CONFLICT)
+endif()
+
+if(TANGRAM_DEV_MODE)
+  target_compile_definitions(tangram-core
+    PRIVATE
+    TANGRAM_DEV_MODE)
+
+  if(TANGRAM_DEV_DEBUG_RENDERER)
+    target_compile_definitions(tangram-core
+      PRIVATE
+      TANGRAM_DEBUG_RENDERER)
+
+    target_sources(tangram-core
+      PRIVATE
+      src/debug/frameInfo.cpp
+      src/debug/textDisplay.cpp
+      src/style/debugStyle.cpp
+      src/style/debugTextStyle.cpp
+      src/gl/primitives.cpp)
+  endif()
 endif()
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
