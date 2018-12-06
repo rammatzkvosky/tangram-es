@@ -6,6 +6,9 @@ find_package(OpenGL REQUIRED)
 
 include(cmake/glfw.cmake)
 
+# Set flag for core library to use JavaScriptCore.
+set(TANGRAM_USE_JAVASCRIPTCORE 1)
+
 add_bundle_resources(RESOURCES "${PROJECT_SOURCE_DIR}/scenes" "Resources")
 
 add_executable(tangram

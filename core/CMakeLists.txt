@@ -110,11 +110,11 @@ target_include_directories(tangram-core
   # TODO: These headers shouldn't be public, but Platform classes use them.
   src
   # TODO: This header shouldn't be public, but we use it in propertyItem.h
+  deps/glm
   deps/variant/include
   PRIVATE
   generated
   deps
-  deps/glm
   deps/earcut/include
   deps/isect2d/include
   deps/hash-library
@@ -135,7 +135,6 @@ target_include_directories(tangram-core
 target_link_libraries(tangram-core
   PRIVATE
   ${MBTILES_LIBS}
-  duktape
   css-color-parser-cpp
   yaml-cpp
   alfons
@@ -143,6 +142,15 @@ target_link_libraries(tangram-core
   miniz
   z
 )
+
+# Choose JavaScript implementation.
+if(TANGRAM_USE_JAVASCRIPTCORE)
+  target_sources(tangram-core PRIVATE src/js/JSCoreContext.cpp)
+  target_link_libraries(tangram-core PRIVATE "-framework JavaScriptCore")
+else()
+  target_sources(tangram-core PRIVATE src/js/DuktapeContext.cpp)
+  target_link_libraries(tangram-core PRIVATE duktape)
+endif()
 
 if(UNIX AND NOT APPLE)
   # SQLite needs dl dynamic library loader when Linux

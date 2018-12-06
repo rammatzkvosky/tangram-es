@@ -20,6 +20,9 @@ if (IOS_SDK_VERSION VERSION_LESS 11.0)
 endif()
 set(SQLITECPP_INTERNAL_SQLITE OFF CACHE BOOL "")
 
+# Set flag for core library to use JavaScriptCore.
+set(TANGRAM_USE_JAVASCRIPTCORE 1)
+
 # Headers must be absolute paths for the copy_if_different command on the
 # static library target, relative paths cause it to fail with an error.
 set(TANGRAM_FRAMEWORK_HEADERS
@@ -142,7 +145,6 @@ target_include_directories(tangram-static PRIVATE
 # delimits with semicolons. Xcode expects a space-delimited list.
 set(TANGRAM_STATIC_DEPENDENCIES "\
   $<TARGET_FILE:tangram-core>
-  $<TARGET_FILE:duktape>
   $<TARGET_FILE:css-color-parser-cpp>
   $<TARGET_FILE:yaml-cpp>
   $<TARGET_FILE:alfons>
